@@ -7,30 +7,32 @@ var user_mod = require("./user.js");
 var config = require('./config.json');
 
 // TODO make this run every hour
-get_prs();
 
-function get_prs() {
+/*function get_prs() {
     call.api_call(config.repo + '/pulls', function(json) {
-        var pulls = [];
         json.forEach(process_pr);
     });
-}
+}*/
 
-function process_pr(pr) {
+exports.process_pr = function(pr) {
+    if (pr.action != "opened") {
+        return;
+    }
+    pr = pr.pull_request;
     var user = pr.user.login;
     var number = pr.number;
 
     get_files_changed(number, function(file) {
         if (file.filename == user + ".json") {
             console.log("Found legit PR for user " + user);
-            merge_pr(number, user);
+            //merge_pr(number, user);
             user_mod.process_user(user);
         } else {
             console.log("PR for user " + user + " changes file " + file.filename);
             console.log("    ignored")
         }
     });
-}
+};
 
 function merge_pr(number, user) {
     call.api_call(config.repo + '/pulls/' + number + '/merge', function(json) {

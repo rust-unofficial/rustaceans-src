@@ -1,0 +1,167 @@
+@font-face {
+    font-family: 'Fira Sans';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Fira Sans Light'), url("http://www.rustaceans.org/fonts/FiraSans-Light.woff") format('woff');
+}
+@font-face {
+    font-family: 'Fira Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Fira Sans'), url("http://www.rustaceans.org/fonts/FiraSans-Regular.woff") format('woff');
+}
+@font-face {
+    font-family: 'Fira Sans';
+    font-style: normal;
+    font-weight: 500;
+    src: local('Fira Sans Medium'), url("http://www.rustaceans.org/fonts/FiraSans-Medium.woff") format('woff');
+}
+
+img.logo {
+    margin: 20px;
+    max-width: 100%;
+}
+img.avatar {
+    margin: 0px;
+    max-width: 100%;
+    border-radius: 4px;
+}
+@media (min-width: 500px) {
+    img.logo {
+        float: left;
+    }
+    img.avatar {
+        float: right;
+    }
+}
+div.clear {
+    clear: both;
+}
+div.headsearch {
+    padding: 20px;
+}
+.searchnotes {
+    font-size: 0.85em;
+    margin-top: -0.3em;
+}
+.searchbox {
+    width: 250px;
+}
+body {
+    font-family: 'Fira Sans', "Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    max-width: 820px;
+}
+@media (min-width: 992px) {
+    body {
+        margin-left: 18%;
+    }
+}
+p {
+    margin-top: 1.2em;
+    margin-bottom: 1.2em;
+}
+p.narrow {
+    max-width: 640px;
+}
+li {
+    max-width: 580px;
+}
+span.name {
+    font-weight: 500;
+    font-size: 1.2em;
+}
+div.name {
+    margin-top: 0em;
+    margin-bottom: 1em;
+}
+div.row {
+    margin-bottom: 0.3em;
+}
+span.key {
+    width: 200px;
+    display: inline-block;
+}
+div.searchresult {
+    border: solid 1px #CCC;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    padding: 20px 10px 20px 10px;
+    max-width: 600px;
+    border-radius: 4px;
+    background-color: #F7F7F7;
+}
+a {
+  color: #428bca;
+  text-decoration: none;
+}
+a:hover,
+a:focus {
+  color: #2a6496;
+  text-decoration: underline;
+}
+a:focus {
+  outline: thin dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+.pitch b {
+    font-weight: 400;
+}
+li {
+    margin-bottom: .5em;
+}
+h1 {
+    font-size: 2em;
+    margin-top: 1.2em;
+    margin-bottom: 0.5em;
+}
+
+ul {
+    padding-left: 30px;
+}
+
+h2 {
+    font-weight: 500;
+    font-size: 18.5px; /* gridfit */
+}
+h3 {
+    font-weight: 500;
+}
+
+
+
+p.pitch {
+    font-size: 24px;
+    font-weight: 300;
+    text-align: center;
+}
+@media (min-width: 992px) {
+    p.pitch {
+        font-size: 24px;
+        margin-top: 1em;
+        margin-bottom: 0.5em;
+        margin-right: 1em;
+        text-align: left;
+    }
+}
+
+img {
+  border: 0;
+}
+.container {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+@media (min-width: 768px) {.container {
+    width: 750px;
+  }}
+@media (min-width: 992px) {.container {
+    width: 970px;
+  }}
+@media (min-width: 1200px) {.container {
+    width: 1170px;
+  }}

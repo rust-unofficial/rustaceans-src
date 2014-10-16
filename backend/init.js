@@ -3,6 +3,8 @@
 // To setup environment:
 //   sudo apt-get install node
 //   sudo npm install sqlite3
+//   sudo npm install async
+//   sudo npm install marked
 
 
 var sqlite = require("sqlite3");
@@ -22,7 +24,6 @@ db.serialize(function() {
     db.run("CREATE TABLE people(username STRING PRIMARY KEY,\
                                 name STRING,\
                                 irc STRING,\
-                                show_github BOOL,\
                                 show_avatar BOOL,\
                                 email STRING,\
                                 discourse STRING,\
@@ -45,7 +46,7 @@ function process_repo() {
             return;
         }
         json.forEach(function(file) {
-            if (str_endswith(file.name, '.json')) {
+            if (str_endswith(file.name, '.json') && file.name != 'template.json') {
                 user_mod.process_user(file.name.substring(0, file.name.length-5));
             }
         });

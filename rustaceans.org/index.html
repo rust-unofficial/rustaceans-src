@@ -1,0 +1,101 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Rustaceans</title>
+    <link rel="stylesheet" type="text/css" href="http://www.rustaceans.org/rustaceans.org.css">
+    <meta name="description" content="Find contributors and people interested in the Rust programming language.">
+    <link rel="icon" href="http://www.rust-lang.org/favicon.ico">    
+
+</head>
+<body class="container">
+<script src="http://www.rustaceans.org/js/libs/jquery-1.10.2.min.js"></script>
+<script src="http://www.rustaceans.org/js/libs/handlebars-1.0.0.js"></script>
+<script src="http://www.rustaceans.org/js/libs/ember.js"></script>
+<script src="http://www.rustaceans.org/js/libs/ember-data.js"></script>
+
+<script src="http://www.rustaceans.org/js/application.js"></script>
+<script src="http://www.rustaceans.org/js/router.js"></script>
+
+<script type="text/x-handlebars" data-template-name="_search_box">
+    <p class="pitch">
+        Search for a Rustacean:
+    {{input type="text" placeholder="search" action="search" on="enter" class="searchbox"}}
+    </p>
+    <p class="searchnotes">(by name, irc nick, username for Reddit, GitHub, Discourse, etc.)</p>
+</script>
+
+<script type="text/x-handlebars" data-template-name="_results">
+    {{#each results}}
+    <div class="searchresult">
+    {{#if avatar}}<img class="avatar" src="{{unbound avatar}}" height="128" width="128">{{/if}}
+    {{#if name}}<div class="name"><span class="name">{{name}}</span></div>{{/if}}
+    <div class="row"><span class="key">GitHub username</span><span class="value"><a href="https://github.com/{{unbound username}}">{{username}}</a></span></div>
+    {{#if irc}}<div class="row"><span class="key">irc nick</span><span class="value"><span class="irc-nick">{{irc}}</span>{{#if irc_channels}} on {{#each irc_channels}} <a href="irc://moznet/{{unbound this}}">#{{this}}</a> {{/each}}{{/if}}</span></div>{{/if}}
+    {{#if discourse}}<div class="row"><span class="key">discourse username</span><span class="value"><a href="http://discuss.rust-lang.org/users/{{unbound discourse}}">{{discourse}}</a></span></div>{{/if}}
+    {{#if reddit}}<div class="row"><span class="key">reddit username</span><span class="value"><a href="http://www.reddit.com/user/{{unbound reddit}}">{{reddit}}</a></span></div>{{/if}}
+    {{#if twitter}}<div class="row"><span class="key">twitter username</span><span class="value"><a href="https://twitter.com/{{unbound twitter}}">{{twitter}}</a></span></div>{{/if}}
+    {{#if website}}<div class="row"><span class="key">website</span><span class="value"><a href="{{unbound website}}">{{website}}</a></span></div>{{/if}}
+    {{#if blog}}<div class="row"><span class="key">blog</span><span class="value"><a href="{{unbound blog}}">{{blog}}</a></span></div>{{/if}}
+    {{#if email}}<div class="row"><span class="key">email</span><span class="value"><a href="mailto:{{unbound email}}">{{email}}</a></span></div>{{/if}}
+    <div class="clear"></div>
+    {{#if notes}}<div class="notesrow"><span class="notes">{{{notes}}}</span></div>{{/if}}
+    </div>
+    {{/each}}
+
+    {{partial "search_box"}}
+
+    <p>
+    {{#link-to 'index'}}&lt;&lt;&lt; back to rustaceans.org front page{{/link-to}}
+    </p>
+</script>
+
+<script type="text/x-handlebars" data-template-name="search">
+{{partial "results"}}
+</script>
+
+<script type="text/x-handlebars" data-template-name="people">
+{{partial "results"}}
+</script>
+
+<script type="text/x-handlebars" data-template-name="index">
+    <img class="logo" src="http://www.rust-lang.org/logos/rust-logo-256x256-blk.png" height="128" width="128" alt="Rust logo" />
+    <div class="headsearch">{{partial "search_box"}}</div>
+    <div class="clear"></div>
+    <p class="pitch narrow">
+        <a href="http://www.rust-lang.org/">Rust</a> is a systems programming language that runs blazingly fast, prevents almost all crashes, and eliminates data races.
+    </p>
+    <p class="narrow">
+        Rustaceans are people who use Rust, contribute to Rust, or are interested in the development of Rust.
+    </p>
+    <p class="narrow">
+        This website is for finding Rustaceans.
+        Wondering who is behind that GitHub username or IRC nick? Here is where to find out (search at the top of the page).
+    </p>
+
+
+    <p>
+        Rustaceans communicate via many channels:
+        <ul>
+            <li>IRC on Moznet. 
+            <ul>
+            <li><a href="irc://moznet/rust">#rust</a> is for all things Rust;</li>
+            <li><a href="irc://moznet/rust-internals">#rust-internals</a> is for discussion of the implementation of the Rust compiler and libraries;</li>
+            <li><a href="irc://moznet/rust-game-dev">#rust-game-dev</a> is for people doing game development in Rust;</li>
+            <li><a href="irc://moznet/cargo">#cargo</a> is for discussion of Cargo, Rust's package manager;</li>
+            <li><a href="irc://moznet/rust-offtopic">#rust-offtopic</a> is for general chit-chat amongst Rustaceans;</li>
+            <li><a href="irc://moznet/servo">#servo</a> is for discussion of Servo, the browser engine written in Rust.</li>
+            </ul>
+            </li>
+            <li><a href="http://discuss.rust-lang.org/">Discourse</a>: for discussion of Rust langauge design and implementation. And bike-shedding.</li>
+            <li><a href="http://www.reddit.com/r/rust">Reddit</a>: for general Rust discussion.</li>
+            <li><a href="https://mail.mozilla.org/listinfo/rust-dev">The rust-dev mailing list</a>: if you must.</li>
+        </ul>
+    </p>
+    <p>
+        If you want to add or edit your details on rustaceans.org, you can send a pull request to the <a>rustaceans.org repo</a>. It's very simple. See the readme in the repo for details.
+    </p>
+</script>
+
+</body>
+</html>

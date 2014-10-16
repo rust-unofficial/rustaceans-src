@@ -1,7 +1,8 @@
 // Process a user from a file in the repo to an entry in the db.
 
-var call = require('./call.js');
 var sqlite = require("sqlite3");
+var marked = require("marked");
+var call = require('./call.js');
 var config = require('./config.json');
 
 exports.process_user = function(user) {
@@ -17,8 +18,9 @@ exports.process_user = function(user) {
                 var user_info = JSON.parse(buf.toString('ascii'));
                 user_info['username'] = user;
                 insert_to_db(user_info);
+                console.log("inserted into db");
             } catch (err) {
-                console.log("error parsing user: " + user);
+                console.log("error parsing user: " + user + ": " + err);
             }
         } else {
             console.log("unexpected contents for " + user + ": " + json.type);
@@ -32,7 +34,6 @@ var fields = [
     ["username", true],
     ["name", true],
     ["irc", true],
-    ["show_github", false],
     ["show_avatar", false],
     ["email", true],
     ["discourse", true],
@@ -51,20 +52,24 @@ function insert_to_db(user_info) {
     var blob = '';
     var first = true;
     var field_count = 0;
-    for (i = 0; i < fields.length; ++i) {
-        var field = fields[i][0];
+
+    fields.forEach(function(f) {
+        var field = f[0];
 
         if (!(field in user_info)) {
-            continue;
+            return;
         }
 
         var value = user_info[field];
         field_count += 1;
 
-        if (field == 'twitter' && value[0] != '@') {
+        if (field == 'twitter' && value && value[0] != '@') {
             value = '@' + value;
         }
-        if (fields[i][1] && value.length > 0) {
+        if (field == 'notes') {
+            // Convert notes from markdown to html.
+            value = marked(value);
+        } else if (f[1] && value.length > 0) {
             blob += value + "\n"
         }
 
@@ -77,7 +82,7 @@ function insert_to_db(user_info) {
         strings += field;
         values_str += "?";
         values.push(value);
-    }
+    });
 
     strings += ', blob';
     values_str += ", ?";
@@ -99,9 +104,9 @@ function insert_to_db(user_info) {
         // irc channels go into a separate table
         var irc_string = 'INSERT INTO people_channels (person, channel) VALUES (?, ?);'
         var channels = user_info['irc_channels'];
-        for (i = 0; i < channels.length; ++i) {
-            db.run(irc_string, user_info['username'], channels[i], err_handler);
-        }
+        channels.forEach(function(ch) {
+            db.run(irc_string, user_info['username'], ch, err_handler);
+        });
     });
     db.close();
 }
