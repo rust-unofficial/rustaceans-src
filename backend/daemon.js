@@ -6,8 +6,6 @@ var call = require('./call.js');
 var user_mod = require("./user.js");
 var config = require('./config.json');
 
-// TODO make this run every hour
-
 /*function get_prs() {
     call.api_call(config.repo + '/pulls', function(json) {
         json.forEach(process_pr);
@@ -15,7 +13,8 @@ var config = require('./config.json');
 }*/
 
 exports.process_pr = function(pr) {
-    if (pr.action != "opened") {
+    if (pr.action != "opened" && pr.action != "synchronize") {
+        console.log("pr.action: " + pr.action + ", aborting");
         return;
     }
     pr = pr.pull_request;
@@ -25,8 +24,7 @@ exports.process_pr = function(pr) {
     get_files_changed(number, function(file) {
         if (file.filename == user + ".json") {
             console.log("Found legit PR for user " + user);
-            //merge_pr(number, user);
-            user_mod.process_user(user);
+            merge_pr(number, user, user_mod.process_user);
         } else {
             console.log("PR for user " + user + " changes file " + file.filename);
             console.log("    ignored")
@@ -34,10 +32,12 @@ exports.process_pr = function(pr) {
     });
 };
 
-function merge_pr(number, user) {
+function merge_pr(number, user, callback) {
     call.api_call(config.repo + '/pulls/' + number + '/merge', function(json) {
         if (!json.merged) {
             console.log("merging PR " + number + " for " + user + " failed: " + json.message);
+        } else {
+            callback(user);
         }
     },
     { 'commit_message': "Merging PR " + number + " from user " + user },

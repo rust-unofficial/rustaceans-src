@@ -8,6 +8,9 @@ var config = require('./config.json');
 exports.process_user = function(user) {
     call.api_call(config.repo + '/contents/' + user + '.json', function(json) {
         if (!json || json.type == undefined) {
+            console.log("bad json: ");
+            console.log(json)
+            console.log("for: " + config.repo + '/contents/' + user + '.json')
             // remove the user from the db
             insert_to_db({'username': user});
             return;

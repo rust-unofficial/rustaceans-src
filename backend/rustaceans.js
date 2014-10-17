@@ -83,14 +83,16 @@ function search(search_str, res) {
     db.close();
 }
 
-// Return a info for a single user. Returns either a single user JSON object or
+// Return info for a single user. Returns either a single user JSON object or
 // an empty JSON object if there is no such user.
 function get_user(username, res) {
     // Check the db for the user.
     var db = new sqlite.Database("rustaceans.db");
     db.get('SELECT * FROM people WHERE username=?;', username, function(err, row) {
         if (err || !row) {
-            console.log("an error occured searching for user " + username + ": " + err);
+            if (err) {
+                console.log("an error occured searching for user " + username + ": " + err);
+            }
             make_response(res, []);
             return;
         }
@@ -104,7 +106,7 @@ function get_user(username, res) {
 
 // Turn data into JSON and add it to the response
 function make_response(response, data) {
-    response.writeHead(200, {"Content-Type": "application/json", "Access-Control-Allow-Origin": "http://www.rustaceans.org"});
+    response.writeHead(200, {"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"});
     response.end(JSON.stringify(data));
 }
 
