@@ -32,3 +32,12 @@ exports.api_call = function(path, f, body, method) {
 
     request.end();
 }
+
+// Leave a comment on an issue or PR.
+exports.comment = function(number, comment) {
+    var msg = { 'body': comment };
+    exports.api_call(config.repo + '/issues/' + number + '/comments',
+                     function(json) {},
+                     msg,
+                     'POST');
+}

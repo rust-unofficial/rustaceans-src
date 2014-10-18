@@ -27,7 +27,8 @@ exports.process_pr = function(pr) {
             merge_pr(number, user, user_mod.process_user);
         } else {
             console.log("PR for user " + user + " changes file " + file.filename);
-            console.log("    ignored")
+            console.log("    ignored");
+            call.comment(number, 'Error trying to merge. This PR modifies more than just your details. Please only add, modify, or remove the file `' + user + '.json`.');
         }
     });
 };
@@ -36,8 +37,10 @@ function merge_pr(number, user, callback) {
     call.api_call(config.repo + '/pulls/' + number + '/merge', function(json) {
         if (!json.merged) {
             console.log("merging PR " + number + " for " + user + " failed: " + json.message);
+            call.comment(number, 'Merging this PR failed\n\nping @nick29581\n\nreason: '+ json.message);
         } else {
-            callback(user);
+            console.log("merged PR " + number + " for " + user);
+            callback(user, number);
         }
     },
     { 'commit_message': "Merging PR " + number + " from user " + user },
