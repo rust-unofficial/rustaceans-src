@@ -29,7 +29,7 @@
     {{#each results}}
     <div class="searchresult">
     {{#if avatar}}<img class="avatar" src="{{unbound avatar}}" height="128" width="128">{{/if}}
-    {{#if name}}<div class="name"><span class="name">{{name}}</span></div>{{/if}}
+    {{#if name}}<div class="name"><span class="name">{{#link-to 'people' username}}{{name}}{{/link-to}}</span></div>{{/if}}
     <div class="row"><span class="key">GitHub username</span><span class="value"><a href="https://github.com/{{unbound username}}">{{username}}</a></span></div>
     {{#if irc}}<div class="row"><span class="key">irc nick</span><span class="value"><span class="irc-nick">{{irc}}</span>{{#if irc_channels}} on {{#each irc_channels}} <a href="irc://moznet/{{unbound this}}">#{{this}}</a> {{/each}}{{/if}}</span></div>{{/if}}
     {{#if discourse}}<div class="row"><span class="key">discourse username</span><span class="value"><a href="http://discuss.rust-lang.org/users/{{unbound discourse}}">{{discourse}}</a></span></div>{{/if}}
