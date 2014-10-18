@@ -2,6 +2,7 @@
 
 var sqlite = require("sqlite3");
 var marked = require("marked");
+marked.options({sanitize: true});
 var call = require('./call.js');
 var config = require('./config.json');
 
