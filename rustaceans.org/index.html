@@ -58,6 +58,10 @@
 {{partial "results"}}
 </script>
 
+<script type="text/x-handlebars" data-template-name="random">
+{{partial "results"}}
+</script>
+
 <script type="text/x-handlebars" data-template-name="index">
     <img class="logo" src="http://www.rust-lang.org/logos/rust-logo-256x256-blk.png" height="128" width="128" alt="Rust logo" />
     <div class="headsearch">{{partial "search_box"}}</div>
@@ -95,6 +99,7 @@
     <p>
         If you want to add or edit your details on rustaceans.org, you can send a pull request to the <a href="https://github.com/nick29581/rustaceans.org">rustaceans.org repo</a>. It's very simple. See the readme in the repo for details.
     </p>
+    <p>See a {{#link-to 'random'}}random rustacean{{/link-to}}.</p>
 </script>
 
 </body>

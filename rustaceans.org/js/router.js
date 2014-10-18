@@ -10,6 +10,10 @@ Rustaceans.Router.map(function() {
 });
 
 Rustaceans.Router.map(function() {
+  this.resource('random', { path: '/random' });
+});
+
+Rustaceans.Router.map(function() {
   this.resource('people', { path: '/:username' });
 });
 
@@ -32,7 +36,7 @@ Rustaceans.SearchRoute = Ember.Route.extend({
     return jQuery.getJSON('http://www.ncameron.org/rustaceans/search?for=' + params.needle).then(function(res) {
       return { results: res };
     });
-  },
+  }
 });
 
 
@@ -41,5 +45,14 @@ Rustaceans.ApplicationRoute = Ember.Route.extend({
     search: function(val) {
       this.transitionTo('search', val);
     }
+  }
+});
+
+
+Rustaceans.RandomRoute = Ember.Route.extend({
+  model: function(params) {
+    return jQuery.getJSON('http://www.ncameron.org/rustaceans/random').then(function(res) {
+      return { results: res };
+    });
   }
 });

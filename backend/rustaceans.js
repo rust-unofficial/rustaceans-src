@@ -17,7 +17,7 @@ http.createServer(function (req, res) {
     var parsed_url = url.parse(req.url, true);
     var pathname = parsed_url.pathname;
     if (pathname == '/user') {
-        get_user(parsed_url.query['username'] , res);
+        get_user(parsed_url.query['username'], res);
     } else if (pathname == '/search') {
         search(parsed_url.query['for'] , res);
     } else if (pathname == '/pr') {
@@ -37,6 +37,9 @@ http.createServer(function (req, res) {
                 res.end("Error: " + e);
             }
         });
+    } else if (pathname =='/random') {
+        // Return a random rustacean.
+        make_random_user(function (username) { get_user(username, res) } );
     } else {
         res.writeHead(404, {"Content-Type": "text/plain"});
         res.write("404 Not Found\n");
@@ -48,11 +51,31 @@ function get_channels(username, res, db, callback) {
     db.all('SELECT * FROM people_channels WHERE person=?;', username, function(err, rows) {
         if (err) {
             console.log("an error occured searching for irc channels for " + username + ": " + err);
-            make_response(res, []);
+            make_response(res, [], db);
             return;
         }
 
         callback(rows);
+    });
+}
+
+function make_random_user(mkusr) {
+    var db = new sqlite.Database("rustaceans.db");
+    db.all('SELECT username FROM people;', function(err, rows) {
+        if (err) {
+            console.log("an error occured while looking up usernames: " + err);
+            make_response(res, [], db);
+            return;
+        }
+
+        if (!rows) {
+            console.log("no resuls while looking up usernames: " + err);
+            make_response(res, [], db);
+            return;
+        }
+
+        var username = rows[Math.floor(Math.random() * rows.length)].username;
+        mkusr(username);
     });
 }
 
@@ -61,8 +84,8 @@ function search(search_str, res) {
     var db = new sqlite.Database("rustaceans.db");
     db.all("SELECT * FROM people WHERE blob LIKE '%" + search_str + "%';", function(err, rows) {
         if (err) {
-            console.log("an error occured whilst searching for '" + search_str + "': " + err);
-            make_response(res, []);
+            console.log("an error occured while searching for '" + search_str + "': " + err);
+            make_response(res, [], db);
             return;
         }
 
@@ -77,13 +100,12 @@ function search(search_str, res) {
             };
         }),
         function(err, result) {
-            make_response(res, result);
+            make_response(res, result, db);
         });
     });
-    db.close();
 }
 
-// Return info for a single user. Returns either a single user JSON object or
+// Make a response of info for a single user. Returns either a single user JSON object or
 // an empty JSON object if there is no such user.
 function get_user(username, res) {
     // Check the db for the user.
@@ -93,21 +115,21 @@ function get_user(username, res) {
             if (err) {
                 console.log("an error occured searching for user " + username + ": " + err);
             }
-            make_response(res, []);
+            make_response(res, [], db);
             return;
         }
 
         get_channels(username, res, db, function(rows) {
-            make_response(res, [make_user(row, rows)]);
+            make_response(res, [make_user(row, rows)], db);
         });
     });
-    db.close();
 }
 
 // Turn data into JSON and add it to the response
-function make_response(response, data) {
+function make_response(response, data, db) {
     response.writeHead(200, {"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"});
     response.end(JSON.stringify(data));
+    db.close();
 }
 
 // Does not include username.
