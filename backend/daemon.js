@@ -21,14 +21,14 @@ exports.process_pr = function(pr) {
     var user = pr.user.login;
     var number = pr.number;
 
-    get_files_changed(number, function(file) {
-        if (file.filename == user + ".json") {
+    get_files_changed(number, user, function(file) {
+        if (file.filename == "data/" + user + ".json") {
             console.log("Found legit PR for user " + user);
             merge_pr(number, user, user_mod.process_user);
         } else {
             console.log("PR for user " + user + " changes file " + file.filename);
             console.log("    ignored");
-            call.comment(number, 'Error trying to merge. This PR modifies more than just your details. Please only add, modify, or remove the file `' + user + '.json`.');
+            call.comment(number, 'Error trying to merge. This PR modifies more than just your details. Please only add, modify, or remove the file `data/' + user + '.json`.');
         }
     });
 };
@@ -47,7 +47,7 @@ function merge_pr(number, user, callback) {
     'PUT');
 }
 
-function get_files_changed(pr_number, do_file) {
+function get_files_changed(pr_number, user, do_file) {
     call.api_call(config.repo + '/pulls/' + pr_number + '/files', function(json) {
         var files = [];
         json.forEach(function(f){
@@ -57,6 +57,7 @@ function get_files_changed(pr_number, do_file) {
             do_file(files[0]);
         } else {
             console.log(files.length + " changed files");
+            call.comment(pr_number, 'Error trying to merge. This PR modifies multiple files. Please only add, modify, or remove the file `' + user + '.json`.');
         }
     });
 }

@@ -7,11 +7,11 @@ var call = require('./call.js');
 var config = require('./config.json');
 
 exports.process_user = function(user, pr_number) {
-    call.api_call(config.repo + '/contents/' + user + '.json', function(json) {
+    call.api_call(config.repo + '/contents/data/' + user + '.json', function(json) {
         if (!json || json.type == undefined) {
             console.log("bad json: ");
             console.log(json)
-            console.log("for: " + config.repo + '/contents/' + user + '.json')
+            console.log("for: " + config.repo + '/contents/data/' + user + '.json')
             // remove the user from the db
             insert_to_db({'username': user}, function() {
                 if (pr_number) {

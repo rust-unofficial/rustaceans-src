@@ -41,7 +41,7 @@ db.serialize(function() {
 db.close();
 
 function process_repo() {
-    call.api_call(config.repo + '/contents/', function(json) {
+    call.api_call(config.repo + '/contents/data', function(json) {
         if (!json) {
             return;
         }
