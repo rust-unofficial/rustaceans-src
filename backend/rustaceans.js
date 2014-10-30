@@ -82,7 +82,7 @@ function make_random_user(mkusr) {
 // Search for users, returns a possibly empty array of user json objects.
 function search(search_str, res) {
     var db = new sqlite.Database("rustaceans.db");
-    db.all("SELECT * FROM people WHERE blob LIKE '%" + search_str + "%';", function(err, rows) {
+    db.all("SELECT * FROM people WHERE blob LIKE ?", "%" + search_str + "%", function(err, rows) {
         if (err) {
             console.log("an error occured while searching for '" + search_str + "': " + err);
             make_response(res, [], db);
