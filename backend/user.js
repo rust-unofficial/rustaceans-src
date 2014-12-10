@@ -24,7 +24,7 @@ exports.process_user = function(user, pr_number) {
         if (json.type == 'file' && json.content) {
             var buf = new Buffer(json.content, 'base64');
             try {
-                var user_info = JSON.parse(buf.toString('ascii'));
+                var user_info = JSON.parse(buf.toString('utf8'));
                 user_info['username'] = user;
                 insert_to_db(user_info, function() {
                     console.log("inserted into db");
