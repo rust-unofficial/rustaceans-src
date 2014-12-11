@@ -6,17 +6,18 @@ marked.options({sanitize: true});
 var call = require('./call.js');
 var config = require('./config.json');
 
-exports.process_user = function(user, pr_number) {
+exports.process_user = function(user, pr_number, callback) {
+    if (!callback) {
+        callback = function() {};
+    }
     call.api_call(config.repo + '/contents/data/' + user + '.json', function(json) {
         if (!json || json.type == undefined) {
-            console.log("bad json: ");
-            console.log(json)
-            console.log("for: " + config.repo + '/contents/data/' + user + '.json')
-            // remove the user from the db
+            // Remove the user from the db.
             insert_to_db({'username': user}, function() {
                 if (pr_number) {
-                    call.comment(pr_number, 'Success - you have been removed from rustaceans.org (I\'d recommend you check though, and file an issue if there was a problem).');
+                    call.comment(pr_number, 'Success, you have been removed from rustaceans.org (I\'d recommend you check though, and file an issue if there was a problem).');
                 }
+                callback();
             });
 
             return;
@@ -31,20 +32,29 @@ exports.process_user = function(user, pr_number) {
                     if (pr_number) {
                         call.comment(pr_number, 'Success, the rustaceans db has been updated. You can see your details at http://www.rustaceans.org/' + user + '.');
                     }
+                    callback();
                 });
             } catch (err) {
                 console.log("error parsing user: " + user + ": " + err);
                 if (pr_number) {
                     call.comment(pr_number, 'There was an error parsing JSON (`' + err + '`), please double check your json file and re-submit the PR. If you think it\'s good, ping @nick29581.');
                 }
+                callback();
             }
         } else {
             console.log("unexpected contents for " + user + ": " + json.type);
             if (pr_number) {
                 call.comment(pr_number, 'There was an error parsing JSON (unexpected contents), please double check your json file and re-submit the PR. If you think it\'s good, ping @nick29581.');
             }
+            callback();
         }
     });
+}
+
+exports.process_many = function(users) {
+    if (users.length > 0) {
+        exports.process_user(users[0], null, exports.process_many(users.slice(1)));
+    }
 }
 
 // Fields to read from the json file and insert into the db
@@ -115,6 +125,7 @@ function insert_to_db(user_info, callback) {
         db.run('DELETE FROM people_channels WHERE person=?;', user_info['username'], err_handler);
 
         if (field_count <= 1) {
+            callback();
             return;
         }
 
@@ -124,9 +135,9 @@ function insert_to_db(user_info, callback) {
         var irc_string = 'INSERT INTO people_channels (person, channel) VALUES (?, ?);'
         var channels = user_info['irc_channels'];
         if (channels) {
-          channels.forEach(function(ch) {
-              db.run(irc_string, user_info['username'], ch, err_handler);
-          });
+            channels.forEach(function(ch) {
+                db.run(irc_string, user_info['username'], ch, err_handler);
+            });
         }
         callback();
     });

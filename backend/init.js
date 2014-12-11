@@ -45,11 +45,14 @@ function process_repo() {
         if (!json) {
             return;
         }
+        usernames = []
         json.forEach(function(file) {
             if (str_endswith(file.name, '.json') && file.name != 'template.json') {
-                user_mod.process_user(file.name.substring(0, file.name.length-5));
+                usernames.push(file.name.substring(0, file.name.length-5));
             }
         });
+
+        user_mod.process_many(usernames);
     });
 }
 
