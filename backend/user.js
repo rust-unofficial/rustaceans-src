@@ -123,9 +123,11 @@ function insert_to_db(user_info, callback) {
         // irc channels go into a separate table
         var irc_string = 'INSERT INTO people_channels (person, channel) VALUES (?, ?);'
         var channels = user_info['irc_channels'];
-        channels.forEach(function(ch) {
-            db.run(irc_string, user_info['username'], ch, err_handler);
-        });
+        if (channels) {
+          channels.forEach(function(ch) {
+              db.run(irc_string, user_info['username'], ch, err_handler);
+          });
+        }
         callback();
     });
     db.close();
