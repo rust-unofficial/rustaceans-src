@@ -110,7 +110,7 @@ function search(search_str, res) {
 function get_user(username, res) {
     // Check the db for the user.
     var db = new sqlite.Database("rustaceans.db");
-    db.get('SELECT * FROM people WHERE username=?;', username, function(err, row) {
+    db.get('SELECT * FROM people WHERE username=? COLLATE NOCASE;', username, function(err, row) {
         if (err || !row) {
             if (err) {
                 console.log("an error occured searching for user " + username + ": " + err);
