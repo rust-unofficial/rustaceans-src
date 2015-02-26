@@ -37,14 +37,14 @@ exports.process_user = function(user, pr_number, callback) {
             } catch (err) {
                 console.log("error parsing user: " + user + ": " + err);
                 if (pr_number) {
-                    call.comment(pr_number, 'There was an error parsing JSON (`' + err + '`), please double check your json file and re-submit the PR. If you think it\'s good, ping @nick29581.');
+                    call.comment(pr_number, 'There was an error parsing JSON (`' + err + '`), please double check your json file and re-submit the PR. If you think it\'s good, ping @nrc.');
                 }
                 callback();
             }
         } else {
             console.log("unexpected contents for " + user + ": " + json.type);
             if (pr_number) {
-                call.comment(pr_number, 'There was an error parsing JSON (unexpected contents), please double check your json file and re-submit the PR. If you think it\'s good, ping @nick29581.');
+                call.comment(pr_number, 'There was an error parsing JSON (unexpected contents), please double check your json file and re-submit the PR. If you think it\'s good, ping @nrc.');
             }
             callback();
         }

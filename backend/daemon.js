@@ -37,7 +37,7 @@ function merge_pr(number, user, callback) {
     call.api_call(config.repo + '/pulls/' + number + '/merge', function(json) {
         if (!json.merged) {
             console.log("merging PR " + number + " for " + user + " failed: " + json.message);
-            call.comment(number, 'Merging this PR failed\n\nping @nick29581\n\nreason: '+ json.message);
+            call.comment(number, 'Merging this PR failed\n\nping @nrc\n\nreason: '+ json.message);
         } else {
             console.log("merged PR " + number + " for " + user);
             callback(user, number);

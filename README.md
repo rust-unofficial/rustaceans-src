@@ -3,7 +3,7 @@ rustaceans-src
 
 This repository is the source code for
 [rustaceans.org](http://www.rustaceans.org). To add or modify your data on the
-website, you want the [rustaceans.org repo](https://github.com/nick29581/rustaceans.org).
+website, you want the [rustaceans.org repo](https://github.com/nrc/rustaceans.org).
 
 The code is in two parts - `backend` is hosted at www.ncameron.org. The entry
 point is `rustaceans.js`. This listens for a GitHub PR hook. It inspects the PR
