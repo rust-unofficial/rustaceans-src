@@ -28,7 +28,7 @@ exports.process_user = function(user, pr_number, callback) {
                 var user_info = JSON.parse(buf.toString('utf8'));
                 user_info['username'] = user;
                 insert_to_db(user_info, function() {
-                    console.log("inserted into db");
+                    console.log("inserted into db: " + user);
                     if (pr_number) {
                         call.comment(pr_number, 'Success, the rustaceans db has been updated. You can see your details at http://www.rustaceans.org/' + user + '.');
                     }
