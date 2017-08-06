@@ -13,12 +13,12 @@ alternate stating point which will rebuild the database from the rustaceans.org
 repo. This is all node.js stuff.
 
 The `rustaceans.org` directory contains the frontend; `index.html` is the entry
-point. This is an ember.js app and is entirely client-based. It uses the
+point. This is a React app and is entirely client-based. It uses the
 backend's API to get data.
 
 ## License
 
-All files in this repository are copyright 2014 rustaceans.org developers.
+All files in this repository are copyright 2014-2017 rustaceans.org developers.
 
 Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
