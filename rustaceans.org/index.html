@@ -3,113 +3,15 @@
 <head>
     <meta charset="utf-8">
     <title>Rustaceans</title>
-    <link rel="stylesheet" type="text/css" href="http://www.rustaceans.org/rustaceans.org.css">
+    <link rel="stylesheet" type="text/css" href="/rustaceans.org.css">
     <meta name="description" content="Find contributors and people interested in the Rust programming language.">
     <link rel="icon" href="http://www.rust-lang.org/favicon.ico">
-
+    <script src="/out/rustaceans.out.js"></script>
 </head>
 <body class="container">
-<script src="/js/libs/jquery-1.10.2.min.js"></script>
-<script src="/js/libs/handlebars-1.0.0.js"></script>
-<script src="/js/libs/ember.js"></script>
-<script src="/js/libs/ember-data.js"></script>
-
-<script src="/js/application.js"></script>
-<script src="/js/router.js"></script>
-
-<script type="text/x-handlebars" data-template-name="_search_box">
-    <p class="pitch">
-        Search for a Rustacean:
-    {{input type="text" placeholder="search" action="search" on="enter" class="searchbox"}}
-    </p>
-    <p class="searchnotes">(by name, irc nick, username for Reddit, GitHub, Discourse, etc.)</p>
-</script>
-
-<script type="text/x-handlebars" data-template-name="_results">
-    {{#each results}}
-    <div class="searchresult">
-    {{#if avatar}}<img class="avatar" src="{{unbound avatar}}" height="128" width="128">{{/if}}
-    {{#if name}}<div class="name"><span class="name">{{#link-to 'people' username}}{{name}}{{/link-to}}</span></div>{{/if}}
-    <div class="row"><span class="key">GitHub username</span><span class="value"><a href="https://github.com/{{unbound username}}">{{username}}</a></span></div>
-    {{#if irc}}<div class="row"><span class="key">irc nick</span><span class="value"><span class="irc-nick">{{irc}}</span>{{#if irc_channels}} on {{#each irc_channels}} <a href="irc://moznet/{{unbound this}}">#{{this}}</a> {{/each}}{{/if}}</span></div>{{/if}}
-    {{#if discourse}}<div class="row"><span class="key">discourse username</span><span class="value"><a href="http://discuss.rust-lang.org/users/{{unbound discourse}}">{{discourse}}</a></span></div>{{/if}}
-    {{#if reddit}}<div class="row"><span class="key">reddit username</span><span class="value"><a href="http://www.reddit.com/user/{{unbound reddit}}">{{reddit}}</a></span></div>{{/if}}
-    {{#if twitter}}<div class="row"><span class="key">twitter username</span><span class="value"><a href="https://twitter.com/{{unbound twitter}}">{{twitter}}</a></span></div>{{/if}}
-    {{#if website}}<div class="row"><span class="key">website</span><span class="value"><a href="{{unbound website}}">{{website}}</a></span></div>{{/if}}
-    {{#if blog}}<div class="row"><span class="key">blog</span><span class="value"><a href="{{unbound blog}}">{{blog}}</a></span></div>{{/if}}
-    {{#if email}}<div class="row"><span class="key">email</span><span class="value"><a href="mailto:{{unbound email}}">{{email}}</a></span></div>{{/if}}
-    <div class="clear"></div>
-    {{#if notes}}<div class="notesrow"><span class="notes">{{{notes}}}</span></div>{{/if}}
-    </div>
-    {{/each}}
-
-    {{partial "search_box"}}
-
-    <p>
-    {{#link-to 'index'}}&lt;&lt;&lt; back to rustaceans.org front page{{/link-to}}
-    </p>
-</script>
-
-<script type="text/x-handlebars" data-template-name="search">
-{{partial "results"}}
-</script>
-
-<script type="text/x-handlebars" data-template-name="people">
-{{partial "results"}}
-</script>
-
-<script type="text/x-handlebars" data-template-name="random">
-{{partial "results"}}
-</script>
-
-<script type="text/x-handlebars" data-template-name="index">
-    <img class="logo" src="http://www.rust-lang.org/logos/rust-logo-256x256-blk.png" height="128" width="128" alt="Rust logo" />
-    <div class="headsearch">{{partial "search_box"}}</div>
-    <div class="clear"></div>
-    <p class="pitch narrow">
-        This website is for finding Rustaceans.
-        Wondering who is behind that GitHub username or IRC nick? Here is where to find out (search at the top of the page).
-    </p>
-
-    <p class="narrow">
-        Rustaceans are people who use Rust, contribute to Rust, or are interested in the development of Rust.
-    </p>
-    <p class="narrow">
-        <a href="http://www.rust-lang.org/">Rust</a> is a systems programming language that runs blazingly fast, prevents almost all crashes, and eliminates data races.
-    </p>
-    <p>
-        If you want to add or edit your details on rustaceans.org, you can send a pull request to the <a href="https://github.com/nrc/rustaceans.org">rustaceans.org repo</a>. It's very simple and there is no new username/password. See the readme in the repo for details.
-    </p>
-    <p>See a {{#link-to 'random'}}random rustacean{{/link-to}}.</p>
-
-    <p>
-        Rustaceans communicate via many channels:
-        <ul>
-            <li><a href="https://users.rust-lang.org/">Discourse (users)</a>: for discussing using and learning Rust.</li>
-            <li><a href="https://internals.rust-lang.org/">Discourse (internals)</a>: for discussion of Rust language design and implementation. And bike-shedding.</li>
-            <li><a href="http://www.reddit.com/r/rust">Reddit</a>: for general Rust discussion.</li>
-            <li>IRC on Moznet:
-            <ul>
-            <li><a href="irc://moznet/rust">#rust</a> is for all things Rust;</li>
-            <li><a href="irc://moznet/rust-internals">#rust-internals</a> is for discussion of other Rust implementation topics;</li>
-            <li><a href="irc://moznet/rustc">#rustc</a> is for discussion of the implementation of the Rust compiler;</li>
-            <li><a href="irc://moznet/rust-libs">#rust-lang</a> is for discussion of the design of the Rust language;</li>
-            <li><a href="irc://moznet/rust-libs">#rust-libs</a> is for discussion of the implementation of the Rust standard libraries;</li>
-            <li><a href="irc://moznet/rust-libs">#rust-tools</a> is for discussion of Rust tools;</li>
-            <li><a href="irc://moznet/rust-gamedev">#rust-gamedev</a> is for people doing game development in Rust;</li>
-            <li><a href="irc://moznet/rust-crypto">#rust-crypto</a> is for discussion of cryptography in Rust;</li>
-            <li><a href="irc://moznet/rust-osdev">#rust-osdev</a> is for people doing OS development in Rust;</li>
-            <li><a href="irc://moznet/rust-webdev">#rust-webdev</a> is for people doing web development in Rust;</li>
-            <li><a href="irc://moznet/rust-networking">#rust-networking</a> is for people doing computer network development and programming in Rust;</li>
-            <li><a href="irc://moznet/cargo">#cargo</a> is for discussion of Cargo, Rust's package manager;</li>
-            <li><a href="irc://moznet/rust-offtopic">#rust-offtopic</a> is for general chit-chat amongst Rustaceans;</li>
-            <li><a href="irc://moznet/servo">#servo</a> is for discussion of Servo, the browser engine written in Rust;</li>
-            <li><a href="irc://moznet/rust-bots">#rust-bots</a> notifcations about Rust from a selection of bots.</li>
-            </ul>
-            </li>
-        </ul>
-    </p>
-</script>
-
+<div id="container" />
 </body>
+<script>
+Rustaceans.renderApp();
+</script>
 </html>
