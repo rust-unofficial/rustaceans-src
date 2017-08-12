@@ -7,13 +7,32 @@ var call = require('./call.js');
 var config = require('./config.json');
 
 exports.process_user = function(user, pr_number, callback) {
+    var db = new sqlite.Database("rustaceans.db");
+    process_internal(user, pr_number, db, callback);
+    db.close();
+}
+
+exports.process_many = function(users, db) {
+    if (!db) {
+        db = new sqlite.Database("rustaceans.db");
+    }
+    if (users.length > 0) {
+        process_internal(users[0], null, db, function() {
+            exports.process_many(users.slice(1), db)
+        });
+    } else {
+        db.close();
+    }
+}
+
+function process_internal(user, pr_number, db, callback) {
     if (!callback) {
         callback = function() {};
     }
     call.api_call(config.repo + '/contents/data/' + user + '.json', function(json) {
         if (!json || json.type == undefined) {
             // Remove the user from the db.
-            insert_to_db({'username': user}, function() {
+            insert_to_db({'username': user}, db, function() {
                 if (pr_number) {
                     call.comment(pr_number, 'Success, you have been removed from rustaceans.org (I\'d recommend you check though, and file an issue if there was a problem).');
                 }
@@ -27,7 +46,7 @@ exports.process_user = function(user, pr_number, callback) {
             try {
                 var user_info = JSON.parse(buf.toString('utf8'));
                 user_info['username'] = user;
-                insert_to_db(user_info, function() {
+                insert_to_db(user_info, db, function() {
                     console.log("inserted into db: " + user);
                     if (pr_number) {
                         call.comment(pr_number, 'Success, the rustaceans db has been updated. You can see your details at http://www.rustaceans.org/' + user + '.');
@@ -51,12 +70,6 @@ exports.process_user = function(user, pr_number, callback) {
     });
 }
 
-exports.process_many = function(users) {
-    if (users.length > 0) {
-        exports.process_user(users[0], null, exports.process_many(users.slice(1)));
-    }
-}
-
 // Fields to read from the json file and insert into the db
 // Does not include irc_channels nor the blob.
 var fields = [
@@ -73,7 +86,7 @@ var fields = [
     ["notes", true]
 ];
 
-function insert_to_db(user_info, callback) {
+function insert_to_db(user_info, db, callback) {
     // compute the blob and an input string for each field
     var strings = 'INSERT INTO people (';
     var values_str = ') VALUES (';
@@ -119,7 +132,6 @@ function insert_to_db(user_info, callback) {
     strings += values_str + ');';
 
     // Write everything to the DB
-    var db = new sqlite.Database("rustaceans.db");
     db.serialize(function() {
         db.run('DELETE FROM people WHERE username=?;', user_info['username'], err_handler);
         db.run('DELETE FROM people_channels WHERE person=?;', user_info['username'], err_handler);
@@ -141,7 +153,6 @@ function insert_to_db(user_info, callback) {
         }
         callback();
     });
-    db.close();
 }
 
 function err_handler(x) {

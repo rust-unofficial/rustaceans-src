@@ -2,9 +2,9 @@
 
 // To setup environment:
 //   sudo apt-get install node
-//   sudo npm install sqlite3
-//   sudo npm install async
-//   sudo npm install marked
+//   npm install sqlite3
+//   npm install async
+//   npm install marked
 
 
 var sqlite = require("sqlite3");
