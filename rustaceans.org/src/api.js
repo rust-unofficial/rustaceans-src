@@ -1,7 +1,7 @@
 import React from 'react';
 import { SearchResults } from './search';
 
-const API_URL = 'http://www.ncameron.org/rustaceans/';
+const API_URL = 'https://www.ncameron.org/rustaceans/';
 
 export class FetchSearch extends React.Component {
     constructor(props) {
