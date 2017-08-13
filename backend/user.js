@@ -6,33 +6,8 @@ marked.options({sanitize: true});
 var call = require('./call.js');
 var config = require('./config.json');
 
-exports.process_user = function(user, pr_number, callback) {
-    var db = exports.openDb();
-    process_internal(user, pr_number, db, callback);
-    db.close();
-}
-
-exports.process_many = function(users, db) {
-    if (!db) {
-        db = exports.openDb();
-    }
-    if (users.length > 0) {
-        process_internal(users[0], null, db, function() {
-            exports.process_many(users.slice(1), db)
-        });
-    } else {
-        db.close();
-    }
-}
-
-exports.openDb = function() {
-    return new sqlite.Database("rustaceans.db");
-}
-
-function process_internal(username, pr_number, db, callback) {
-    if (!callback) {
-        callback = function() {};
-    }
+exports.process_user = function(username, pr_number, callback) {
+    let db = exports.openDb();
     call.api_call(config.repo + '/contents/data/' + username + '.json', function(json) {
         if (!json || json.type == undefined) {
             // Remove the user from the db.
@@ -65,6 +40,11 @@ function process_internal(username, pr_number, db, callback) {
             callback();
         }
     });
+    db.close();
+}
+
+exports.openDb = function() {
+    return new sqlite.Database("rustaceans.db");
 }
 
 exports.add_user = function(user, username, pr_number, db, callback) {
