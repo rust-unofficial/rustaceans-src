@@ -15,11 +15,21 @@ exports.process_pr = function(pr) {
     var user = pr.user.login;
     var pr_number = pr.number;
     call.getIssueId(pr_number, function(pr_id) {
-        // TODO check that file contents parses as JSON
         get_files_changed(pr_id, pr_number, user, function(file) {
             if (file.filename == "data/" + user + ".json") {
                 console.log("Found legit PR for user " + user);
-                merge_pr(pr_id, user), pr_number;
+                // We pull the file from the PR to make sure it is valid JSON.
+                call.url_call(file.contents_url, function(json) {
+                    try {
+                        var buf = new Buffer(json.content, 'base64');
+                        // We don't use the result, but we want to check the file parses as JSON.
+                        JSON.parse(buf.toString('utf8'));
+                        merge_pr(pr_id, user), pr_number;
+                    } catch (err) {
+                        console.log("error parsing PR: " + pr_number);
+                        call.comment(pr_id, 'There was an error parsing JSON (`' + err + '`), please double check your json file.');
+                    }
+                });
             } else {
                 console.log("PR for user " + user + " changes file " + file.filename);
                 console.log("    ignored");
