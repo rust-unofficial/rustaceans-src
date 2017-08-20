@@ -14,17 +14,17 @@ exports.process_pr = function(pr) {
     pr = pr.pull_request;
     var user = pr.user.login;
     var pr_number = pr.number;
-    call.getIssueId(pr_number, function(pr_id) {
+    call.getPrId(pr_number, function(pr_id) {
         get_files_changed(pr_id, pr_number, user, function(file) {
             if (file.filename == "data/" + user + ".json") {
                 console.log("Found legit PR for user " + user);
                 // We pull the file from the PR to make sure it is valid JSON.
-                call.url_call(file.contents_url, function(json) {
+                call.api_call(config.repo + '/git/blobs/' + file.sha, function(json) {
                     try {
                         var buf = new Buffer(json.content, 'base64');
                         // We don't use the result, but we want to check the file parses as JSON.
                         JSON.parse(buf.toString('utf8'));
-                        merge_pr(pr_id, user), pr_number;
+                        merge_pr(pr_id, pr_number, user);
                     } catch (err) {
                         console.log("error parsing PR: " + pr_number);
                         call.comment(pr_id, 'There was an error parsing JSON (`' + err + '`), please double check your json file.');

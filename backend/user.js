@@ -13,6 +13,7 @@ exports.process_user = function(username, pr_id) {
             // Remove the user from the db.
             insert_to_db({'username': username}, db, function() {
                 call.comment(pr_id, 'Success, you have been removed from rustaceans.org (I\'d recommend you check though, and file an issue if there was a problem).');
+                db.close();
             });
 
             return;
@@ -21,17 +22,18 @@ exports.process_user = function(username, pr_id) {
             var buf = new Buffer(json.content, 'base64');
             try {
                 var user_info = JSON.parse(buf.toString('utf8'));
-                exports.add_user(user_info, username, pr_id, db);
+                exports.add_user(user_info, username, pr_id, db, function() { db.close(); });
             } catch (err) {
                 console.log("error parsing user: " + username + ": " + err);
                 call.comment(pr_id, 'There was an error parsing JSON (`' + err + '`), please double check your json file and re-submit the PR. If you think it\'s good, ping @nrc.');
+                db.close();
             }
         } else {
             console.log("unexpected contents for " + username + ": " + json.type);
             call.comment(pr_id, 'There was an error parsing JSON (unexpected contents), please double check your json file and re-submit the PR. If you think it\'s good, ping @nrc.');
+            db.close();
         }
     });
-    db.close();    
 }
 
 exports.openDb = function() {

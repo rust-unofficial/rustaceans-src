@@ -1,7 +1,6 @@
 // A pathetic wrapper around http API calls.
 
 var https = require('https');
-var { URL } = require('url');
 var config = require('./config.json');
 
 exports.api_call = function(path, f, body, method) {
@@ -34,29 +33,6 @@ exports.api_call = function(path, f, body, method) {
     request.end();
 }
 
-exports.url_call = function(url_string, f) {
-    let url = new URL(url_string);
-    var request = https.request(url, function(response) {
-        let body = '';
-        response.on('data',function(chunk) {
-            body+=chunk;
-        });
-        response.on('end',function() {
-            //console.log("recevied:")
-            //console.log(body);
-            var json = JSON.parse(body);
-            f(json);
-        });
-    });
-
-    if (body) {
-        request.write(JSON.stringify(body));
-    }
-
-    request.end();
-
-}
-
 exports.graphql_call = function(query, f, variables) {
     var opts = {
         host :'api.github.com',
@@ -74,8 +50,13 @@ exports.graphql_call = function(query, f, variables) {
         response.on('end',function(){
             // console.log(body);
             if (f) {
-                var json = JSON.parse(body);
-                f(json);
+                try {
+                    var json = JSON.parse(body);
+                    f(json);
+                } catch (err) {
+                    console.log(err);
+                    console.log(body);
+                }
             }
         });
     });
@@ -100,16 +81,16 @@ exports.comment = function(id, comment) {
                           }");
 }
 
-exports.getIssueId = function(number, f) {
+exports.getPrId = function(number, f) {
     let query = "query {\
                    repository(owner:\"nrc\", name:\"rustaceans.org\") {\
-                     issue(number:" + number + ") {\
+                     pullRequest(number:" + number + ") {\
                        id\
                      }\
                    }\
                  }";
     exports.graphql_call(query, function(json) {
-        f(json.repository.issue.id);
+        f(json.data.repository.pullRequest.id);
     });
 }
 
