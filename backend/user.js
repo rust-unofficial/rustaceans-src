@@ -6,16 +6,13 @@ marked.options({sanitize: true});
 var call = require('./call.js');
 var config = require('./config.json');
 
-exports.process_user = function(username, pr_number, callback) {
+exports.process_user = function(username, pr_id) {
     let db = exports.openDb();
     call.api_call(config.repo + '/contents/data/' + username + '.json', function(json) {
         if (!json || json.type == undefined) {
             // Remove the user from the db.
             insert_to_db({'username': username}, db, function() {
-                if (pr_number) {
-                    call.comment(pr_number, 'Success, you have been removed from rustaceans.org (I\'d recommend you check though, and file an issue if there was a problem).');
-                }
-                callback();
+                call.comment(pr_id, 'Success, you have been removed from rustaceans.org (I\'d recommend you check though, and file an issue if there was a problem).');
             });
 
             return;
@@ -24,36 +21,28 @@ exports.process_user = function(username, pr_number, callback) {
             var buf = new Buffer(json.content, 'base64');
             try {
                 var user_info = JSON.parse(buf.toString('utf8'));
-                exports.add_user(user_info, username, pr_number, db, callback);
+                exports.add_user(user_info, username, pr_id, db);
             } catch (err) {
                 console.log("error parsing user: " + username + ": " + err);
-                if (pr_number) {
-                    call.comment(pr_number, 'There was an error parsing JSON (`' + err + '`), please double check your json file and re-submit the PR. If you think it\'s good, ping @nrc.');
-                }
-                callback();
+                call.comment(pr_id, 'There was an error parsing JSON (`' + err + '`), please double check your json file and re-submit the PR. If you think it\'s good, ping @nrc.');
             }
         } else {
             console.log("unexpected contents for " + username + ": " + json.type);
-            if (pr_number) {
-                call.comment(pr_number, 'There was an error parsing JSON (unexpected contents), please double check your json file and re-submit the PR. If you think it\'s good, ping @nrc.');
-            }
-            callback();
+            call.comment(pr_id, 'There was an error parsing JSON (unexpected contents), please double check your json file and re-submit the PR. If you think it\'s good, ping @nrc.');
         }
     });
-    db.close();
+    db.close();    
 }
 
 exports.openDb = function() {
     return new sqlite.Database("rustaceans.db");
 }
 
-exports.add_user = function(user, username, pr_number, db, callback) {
+exports.add_user = function(user, username, pr_id, db, callback) {
     user['username'] = username;
     insert_to_db(user, db, function() {
         console.log("inserted into db: " + username);
-        if (pr_number) {
-            call.comment(pr_number, 'Success, the rustaceans db has been updated. You can see your details at http://www.rustaceans.org/' + username + '.');
-        }
+        call.comment(pr_id, 'Success, the rustaceans db has been updated. You can see your details at http://www.rustaceans.org/' + username + '.');
         callback();
     });
 }

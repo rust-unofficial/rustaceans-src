@@ -49,8 +49,10 @@ exports.graphql_call = function(query, f, variables) {
         });
         response.on('end',function(){
             // console.log(body);
-            var json = JSON.parse(body);
-            f(json);
+            if (f) {
+                var json = JSON.parse(body);
+                f(json);
+            }
         });
     });
 
@@ -60,10 +62,30 @@ exports.graphql_call = function(query, f, variables) {
 }
 
 // Leave a comment on an issue or PR.
-exports.comment = function(number, comment) {
-    var msg = { 'body': comment };
-    exports.api_call(config.repo + '/issues/' + number + '/comments',
-                     function(json) {},
-                     msg,
-                     'POST');
+exports.comment = function(id, comment) {
+    if (!id) {
+        return;
+    }
+    exports.graphql_call("mutation {\
+                            addComment(input:{\
+                              subjectId:\"" + id + "\",\
+                              body:\"" + comment + "\"\
+                            }) {\
+                              subject { id }\
+                            }\
+                          }");
 }
+
+exports.getIssueId = function(number, f) {
+    let query = "query {\
+                   repository(owner:\"nrc\", name:\"rustaceans.org\") {\
+                     issue(number:" + number + ") {\
+                       id\
+                     }\
+                   }\
+                 }";
+    exports.graphql_call(query, function(json) {
+        f(json.repository.issue.id);
+    });
+}
+

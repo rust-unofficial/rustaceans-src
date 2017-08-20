@@ -76,7 +76,7 @@ function process_repo() {
                     }
                     try {
                         let user = JSON.parse(text);
-                        let username = entry.name.substring(0, entry.name.length-5);
+                        let username = entry.name.substring(0, entry.name.length - 5);
                         user_mod.add_user(user, username, null, db, function() {
                             ref_count -= 1;
                             if (ref_count == 0) {
