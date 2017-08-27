@@ -1,10 +1,6 @@
 // A simple web server providing a RESTful API for Rustaceans data. Allows
 // getting a single user or searching for users.
 
-// start with `nohup nodejs rustaceans.js &`
-
-var http = require('http');
-var url = require('url');
 var sqlite = require('sqlite3');
 var async = require('async');
 
@@ -12,40 +8,48 @@ var config = require('./config.json');
 
 var daemon = require('./daemon.js');
 
-// Start up our server listening on port 2345.
-http.createServer(function (req, res) {
-    var parsed_url = url.parse(req.url, true);
-    var pathname = parsed_url.pathname;
-    if (pathname == '/user') {
-        get_user(parsed_url.query['username'], res);
-    } else if (pathname == '/search') {
-        search(parsed_url.query['for'] , res);
-    } else if (pathname == '/pr') {
-        // Get payload and parse it
-        var body = '';
-        req.on('data',function(chunk){
-            body+=chunk;
-        });
-        req.on('end',function(){
-            try {
-                var json = JSON.parse(body);
-                daemon.process_pr(json);
-                res.writeHead(200, {"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"});
-                res.end("Success?");
-            } catch(e) {
-                res.writeHead(200, {"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"});
-                res.end("Error: " + e);
-            }
-        });
-    } else if (pathname =='/random') {
-        // Return a random rustacean.
-        make_random_user(function (username) { get_user(username, res) } );
-    } else {
-        res.writeHead(404, {"Content-Type": "text/plain"});
-        res.write("404 Not Found\n");
-        res.end();
-      }
-}).listen(2345);
+const express = require('express');
+const app = express();
+
+app.get('/user', function (req, res) {
+    get_user(req.query.username, res);
+});
+
+app.get('/search', function (req, res) {
+    search(req.query.for , res);
+});
+
+app.get('/pr', function (req, res) {
+    // Get payload and parse it
+    var body = '';
+    req.on('data',function(chunk){
+        body+=chunk;
+    });
+    req.on('end',function(){
+        res.status(200);
+        res.set("Access-Control-Allow-Origin", "*");
+        try {
+            var json = JSON.parse(body);
+            daemon.process_pr(json);
+            res.send("Success?");
+        } catch(e) {
+            res.send("Error: " + e);
+        }
+    });
+});
+
+app.get('/random', function (req, res) {
+    // Return a random rustacean.
+    make_random_user(function (username) { get_user(username, res) } );
+});
+
+app.get('*', function (req, res) {
+    res.status(404);
+    res.set("Content-Type", "text/plain");
+    res.send("404 Not Found\n");
+});
+
+app.listen(2345);
 
 function get_channels(username, res, db, callback) {
     db.all('SELECT * FROM people_channels WHERE person=?;', username, function(err, rows) {
@@ -126,9 +130,10 @@ function get_user(username, res) {
 }
 
 // Turn data into JSON and add it to the response
-function make_response(response, data, db) {
-    response.writeHead(200, {"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"});
-    response.end(JSON.stringify(data));
+function make_response(res, data, db) {
+    res.status(200);
+    res.set("Access-Control-Allow-Origin", "*");
+    res.json(data);
     db.close();
 }
 
