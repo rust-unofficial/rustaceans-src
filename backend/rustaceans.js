@@ -19,7 +19,7 @@ app.get('/search', function (req, res) {
     search(req.query.for , res);
 });
 
-app.get('/pr', function (req, res) {
+app.post('/pr', function (req, res) {
     // Get payload and parse it
     var body = '';
     req.on('data',function(chunk){
