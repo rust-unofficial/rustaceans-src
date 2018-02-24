@@ -29,7 +29,7 @@ export const Home = (props) => (
                 <li><a href="https://users.rust-lang.org/">Discourse (users)</a>: for discussing using and learning Rust.</li>
                 <li><a href="https://internals.rust-lang.org/">Discourse (internals)</a>: for discussion of Rust language design and implementation. And bike-shedding.</li>
                 <li><a href="http://www.reddit.com/r/rust">Reddit</a>: for general Rust discussion.</li>
-                <li><a href="https://discord.me/rust-langt">Rust Discord</a>: heavily inspired on the IRC, but with support for code highlighting, Rust emojis and voice chat.</li>
+                <li><a href="https://discord.me/rust-lang">Rust Discord</a>: heavily inspired on the IRC, but with support for code highlighting, Rust emojis and voice chat.</li>
                 <li>IRC on Moznet:
                 <ul>
                 <li><a href="irc://moznet/rust">#rust</a> is for all things Rust;</li>
