@@ -147,6 +147,7 @@ var fields = [
     "discourse",
     "reddit",
     "twitter",
+    "patreon",
     "blog",
     "website",
     "notes"

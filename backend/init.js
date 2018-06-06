@@ -29,6 +29,7 @@ db.serialize(function() {
                                 discourse STRING,\
                                 reddit STRING,\
                                 twitter STRING,\
+                                patreon STRING,\
                                 blog STRING,\
                                 website STRING,\
                                 notes STRING,\
