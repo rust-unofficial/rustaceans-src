@@ -4,7 +4,7 @@ import { SearchBox } from './search';
 
 export const Home = (props) => (
     <div>
-        <img className="logo" src="http://www.rust-lang.org/logos/rust-logo-256x256-blk.png" height="128" width="128" alt="Rust logo" />
+        <img className="logo" src="https://www.rust-lang.org/logos/rust-logo-256x256-blk.png" height="128" width="128" alt="Rust logo" />
         <div className="headsearch"><SearchBox /></div>
         <div className="clear"></div>
         <p className="pitch narrow">
