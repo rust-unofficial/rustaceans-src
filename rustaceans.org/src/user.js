@@ -37,7 +37,7 @@ export const Card = (props) => {
     }
     let discourse = null;
     if (props.discourse) {
-        discourse = <div className="row"><span className="key">discourse username</span><span className="value"><a href={"http://discuss.rust-lang.org/users/" + props.discourse}>{props.discourse}</a></span></div>
+        discourse = <div className="row"><span className="key">discourse username</span><span className="value"><a href={"https://users.rust-lang.org/u/" + props.discourse}>{props.discourse}</a></span></div>
     }
     let reddit = null;
     if (props.reddit) {
