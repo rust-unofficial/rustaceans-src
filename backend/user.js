@@ -60,6 +60,7 @@ var fields = [
     ["discourse", true],
     ["reddit", true],
     ["twitter", true],
+    ["patreon", true],
     ["blog", true],
     ["website", true],
     ["notes", true]

@@ -47,6 +47,10 @@ export const Card = (props) => {
     if (props.twitter) {
         twitter = <div className="row"><span className="key">twitter username</span><span className="value"><a href={"https://twitter.com/" + props.twitter}>{props.twitter}</a></span></div>
     }
+    let patreon = null;
+    if (props.patreon) {
+        patreon = <div className="row"><span className="key">patreon username</span><span className="value"><a href={"https://www.patreon.com/" + props.patreon}>{props.patreon}</a></span></div>
+    }
     let website = null;
     if (props.website) {
         website = <div className="row"><span className="key">website</span><span className="value"><a href={props.website}>{props.website}</a></span></div>
@@ -74,6 +78,7 @@ export const Card = (props) => {
         {discourse}
         {reddit}
         {twitter}
+        {patreon}
         {website}
         {blog}
         {email}
